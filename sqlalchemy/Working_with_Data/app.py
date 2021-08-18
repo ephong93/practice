@@ -25,6 +25,7 @@ address_table = Table(
 engine = create_engine('sqlite+pysqlite:///:memory:', echo=True, future=True)
 metadata.create_all(engine)
 
+
 from sqlalchemy import insert, select
 
 stmt = insert(user_table).values(name='spongebob', fullname='Spongbob Squarepants')
@@ -53,3 +54,13 @@ select_stmt = select(user_table.c.id, user_table.c.name + "@aol.com")
 insert_stmt = insert(address_table).from_select(
     ["user_id", "email_address"], select_stmt
 )
+
+
+from sqlalchemy import select
+stmt = select(user_table).where(user_table.c.name == 'spongebob')
+print(stmt)
+
+with engine.connect() as conn:
+    for row in conn.execute(stmt):
+        print(row)
+
